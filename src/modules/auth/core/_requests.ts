@@ -18,7 +18,7 @@ export async function login(email: string, password: string) {
       password,
     })
 
-    return RESPONSE
+    return RESPONSE.data
   } catch (error: any) {
     throw error
   }

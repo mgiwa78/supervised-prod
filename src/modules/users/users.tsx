@@ -48,7 +48,6 @@ const Users = () => {
   useEffect(() => {
     if (!users && token) {
       getUsers(token)
-      console.log(users)
     }
   }, [])
 
@@ -131,74 +130,82 @@ const Users = () => {
               </thead>
               <tbody>
                 {isLoading ? <UsersListLoading /> : ''}
-                {users
-                  ? users.map((user: User) => {
-                      return (
-                        <tr key={user._id}>
-                          <td>
-                            <div className='form-check form-check-sm form-check-custom form-check-solid'>
-                              <input
-                                className='form-check-input widget-13-check'
-                                type='checkbox'
-                                value='1'
-                              />
-                            </div>
-                          </td>
-                          <td>
-                            <span className='text-dark fw-bold text-hover-primary fs-6'>
-                              {user._id}
-                            </span>
-                          </td>
-                          <td>
-                            <span className='text-dark fw-bold text-hover-primary d-block mb-1 fs-6'>
-                              {user.lastName} {user.firstName}
-                            </span>
-                            <span className='text-muted fw-semibold text-muted d-block fs-7'>
-                              {user.email}
-                            </span>
-                          </td>
-                          <td>
-                            <span className='text-dark fw-bold text-hover-primary d-block mb-1 fs-6'>
-                              {user.department.name}
-                            </span>
-                          </td>
-                          {/* <td>
+                {users ? (
+                  users.map((user: User) => {
+                    return (
+                      <tr key={user._id}>
+                        <td>
+                          <div className='form-check form-check-sm form-check-custom form-check-solid'>
+                            <input
+                              className='form-check-input widget-13-check'
+                              type='checkbox'
+                              value='1'
+                            />
+                          </div>
+                        </td>
+                        <td>
+                          <span className='text-dark fw-bold text-hover-primary fs-6'>
+                            {user._id}
+                          </span>
+                        </td>
+                        <td>
+                          <span className='text-dark fw-bold text-hover-primary d-block mb-1 fs-6'>
+                            {user.lastName} {user.firstName}
+                          </span>
+                          <span className='text-muted fw-semibold text-muted d-block fs-7'>
+                            {user.email}
+                          </span>
+                        </td>
+                        <td>
+                          <span className='text-dark fw-bold text-hover-primary d-block mb-1 fs-6'>
+                            {user.department.name}
+                          </span>
+                        </td>
+                        {/* <td>
                           <span className='text-dark fw-bold text-hover-primary d-block mb-1 fs-6'></span>
                         </td> */}
-                          <td className='text-dark fw-bold text-hover-primary fs-6'>
-                            {FormatDate(user.createdAt)}
-                          </td>
-                          <td>
-                            <span className='badge badge-light-success'>
-                              {user.roles.map((e) => {
-                                return e.name
-                              })}
-                            </span>
-                          </td>
-                          <td className='text-end'>
-                            {/* <a
+                        <td className='text-dark fw-bold text-hover-primary fs-6'>
+                          {FormatDate(user.createdAt)}
+                        </td>
+                        <td>
+                          <span className='badge badge-light-success'>
+                            {user.roles.map((e) => {
+                              return e.name
+                            })}
+                          </span>
+                        </td>
+                        <td className='text-end'>
+                          {/* <a
                               href='#'
                               className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
                             >
                               <KTIcon iconName='switch' className='fs-3' />
                             </a> */}
-                            <span
-                              onClick={() => handleModalUpdate(user)}
-                              className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
-                            >
-                              <KTIcon iconName='pencil' className='fs-3' />
-                            </span>
-                            {/* <a
+                          <span
+                            onClick={() => handleModalUpdate(user)}
+                            className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
+                          >
+                            <KTIcon iconName='pencil' className='fs-3' />
+                          </span>
+                          {/* <a
                               href='#'
                               className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm'
                             >
                               <KTIcon iconName='trash' className='fs-3' />
                             </a> */}
-                          </td>
-                        </tr>
-                      )
-                    })
-                  : null}
+                        </td>
+                      </tr>
+                    )
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan={7}>
+                      <div className='fv-row d-flex justify-content-center mh-300px'>
+                        <div className='h-40px w-40px spinner-border spinner-border-sm align-middle ms-2'></div>
+                      </div>
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

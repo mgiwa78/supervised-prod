@@ -42,6 +42,7 @@ export function Login() {
       setLoading(true)
       try {
         const RESPONSE: any = await login(values.email, values.password)
+
         console.log(RESPONSE)
         dispatch(loginSuccess(RESPONSE.data))
         navigate('/dashboard')

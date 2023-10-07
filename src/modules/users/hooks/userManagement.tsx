@@ -30,7 +30,7 @@ function createInitialState() {
       email: '',
     },
     allRoles: [{name: 'Superadmin'}, {name: 'Student'}, {name: 'Supervisor'}],
-    users: [],
+    users: null,
     isLoading: false,
     itemIdForUpdate: undefined,
   }
