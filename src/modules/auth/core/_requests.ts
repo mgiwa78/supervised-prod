@@ -12,12 +12,16 @@ export const PASSWORD_RESET = `${API_URL}/forgotPassword`
 
 // Server should return AuthModel
 export async function login(email: string, password: string) {
-  const RESPONSE = await axios.post<AuthModel>(LOGIN_URL, {
-    email,
-    password,
-  })
+  try {
+    const RESPONSE = await axios.post<AuthModel>(LOGIN_URL, {
+      email,
+      password,
+    })
 
-  return RESPONSE
+    return RESPONSE
+  } catch (error: any) {
+    throw error
+  }
 }
 
 // Server should return AuthModel

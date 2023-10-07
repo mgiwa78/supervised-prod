@@ -24,18 +24,18 @@ const SidebarMenuMain = () => {
         <div className='menu-content pt-8 pb-2'>
           <span className='menu-section text-muted text-uppercase fs-8 ls-1'>Menu</span>
         </div>
-      </div>
-      <SidebarMenuItemWithSub to='/users' title='Users' fontIcon='bi-people' icon='profile-user'>
-        {currentUser?.roles.some((role) => role.name === 'Superadmin') ? (
+      </div>{' '}
+      {currentUser?.roles.some((role) => role.name === 'Superadmin') ? (
+        <SidebarMenuItemWithSub to='/users' title='Users' fontIcon='bi-people' icon='profile-user'>
           <>
             <SidebarMenuItem to='/users/all' title='All' hasBullet={true} />
             <SidebarMenuItem to='/users/roles' title='Roles' hasBullet={true} />
             <SidebarMenuItem to='/users/permissions' title='Permissions' hasBullet={true} />
           </>
-        ) : (
-          ''
-        )}
-      </SidebarMenuItemWithSub>
+        </SidebarMenuItemWithSub>
+      ) : (
+        ''
+      )}
     </>
   )
 }

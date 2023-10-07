@@ -20,12 +20,18 @@ import {
 import {useSelector} from 'react-redux'
 import {selectAuth} from '../../redux/selectors/auth'
 import {AdminDashboard} from '../../modules/dashboard/AdminDashboard'
+import {InstructorDashboard} from '../../modules/dashboard/InstructorDashboard'
+import {StudentDashboard} from '../../modules/dashboard/StudentDashboard'
 
 const DashboardPage: FC = () => {
   const auth = useSelector(selectAuth)
   console.log(auth.user?.roles.some((role) => role.name === 'Superadmin'))
   return (
-    <>{auth.user?.roles.some((role) => role.name === 'Superadmin') ? <AdminDashboard /> : ''}</>
+    <>
+      {auth.user?.roles.some((role) => role.name === 'Superadmin') ? <AdminDashboard /> : ''}
+      {auth.user?.roles.some((role) => role.name === 'Student') ? <StudentDashboard /> : ''}
+      {auth.user?.roles.some((role) => role.name === 'Instructor') ? <InstructorDashboard /> : ''}
+    </>
   )
 }
 const DashboardWrapper: FC = () => {

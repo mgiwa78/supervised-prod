@@ -42,17 +42,23 @@ export function Login() {
       setLoading(true)
       try {
         const RESPONSE: any = await login(values.email, values.password)
+        console.log(RESPONSE)
         dispatch(loginSuccess(RESPONSE.data))
         navigate('/dashboard')
       } catch (error: any) {
-        dispatch(logout())
-        if (error.response.data.error) {
-          setStatus(error.response.data.error)
-        } else {
-          setStatus(error.error)
-        }
         setSubmitting(false)
         setLoading(false)
+        dispatch(logout())
+        console.log(error.response.data.message)
+
+        if (error.response.data.message) {
+          return setStatus(error.response.data.message)
+        }
+        if (error.response?.data.error) {
+          return setStatus(error.response.data.error)
+        } else {
+          return setStatus(error.error)
+        }
       }
     },
   })

@@ -20,8 +20,8 @@ import {
 
 const Dashboard: FC = () => <></>
 
-const StudentDashboard: FC = () => {
-  const studentDahboardb: Array<PageLink> = [
+const InstructorDashboard: FC = () => {
+  const InstrubtorDahboardb: Array<PageLink> = [
     {
       title: 'Home',
       path: '/',
@@ -29,7 +29,7 @@ const StudentDashboard: FC = () => {
       isActive: false,
     },
     {
-      title: 'Student Dahboard',
+      title: 'Instrubtor Dahboard',
       path: '/dashboard',
       isSeparator: true,
       isActive: false,
@@ -37,10 +37,10 @@ const StudentDashboard: FC = () => {
   ]
   return (
     <>
-      <PageTitle breadcrumbs={studentDahboardb}>Student Dahboard</PageTitle>
+      <PageTitle breadcrumbs={InstrubtorDahboardb}>Instrubtor Dahboard</PageTitle>
       <Dashboard />
     </>
   )
 }
 
-export {StudentDashboard}
+export {InstructorDashboard}
