@@ -44,7 +44,7 @@ export function Login() {
         const RESPONSE: any = await login(values.email, values.password)
 
         console.log(RESPONSE)
-        dispatch(loginSuccess(RESPONSE.data))
+        dispatch(loginSuccess(RESPONSE))
         navigate('/dashboard')
       } catch (error: any) {
         setSubmitting(false)
