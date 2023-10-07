@@ -133,11 +133,13 @@ const Permissions = () => {
                   </thead>
                   <tbody className='fw-semibold text-gray-600'>
                     {permissions.map((perm) => (
-                      <tr className='odd'>
+                      <tr key={perm.permission._id} className='odd'>
                         <td>{perm.permission.action}</td>
                         <td>
                           {perm.roles.map((role) => (
-                            <span className='badge badge-light-primary fs-7 m-1'>{role.name}</span>
+                            <span key={role._id} className='badge badge-light-primary fs-7 m-1'>
+                              {role.name}
+                            </span>
                           ))}
                         </td>
                         <td data-order={perm.permission.createdAt}>

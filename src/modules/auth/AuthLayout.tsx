@@ -71,8 +71,8 @@ const AuthLayout = () => {
           {/* end::Logo */}
 
           {/* begin::Title */}
-          <h1 className='text-black fs-3qx fw-bolder text-center mb-7'>Welcome to SuperVised</h1>
-          <h4 className='text-black fs-2 text-center mb-7'>
+          <h1 className='text-black fs-3qx fw-bolder text-center  mb-7'>Welcome to SuperVised</h1>
+          <h4 className='fs-5 text-center mb-7 text-muted'>
             Where academic research meets the digital era
           </h4>
           {/* end::Title */}

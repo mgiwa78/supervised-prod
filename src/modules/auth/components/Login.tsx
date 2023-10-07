@@ -68,10 +68,6 @@ export function Login() {
         <h1 className='text-dark fw-bolder mb-3'>Sign In</h1>
       </div>
 
-      <div className='separator separator-content my-14'>
-        <span className='w-125px text-gray-500 fw-semibold fs-7'>Or with email</span>
-      </div>
-
       {formik.status ? (
         <div className='mb-lg-15 alert alert-danger'>
           <div className='alert-text font-weight-bold'>{formik.status}</div>

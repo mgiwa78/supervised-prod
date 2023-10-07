@@ -9,6 +9,7 @@ import User from '../../types/User'
 import {UserEditModal} from './user-edit-modal/UserEditModal'
 import useUserManagement from './hooks/userManagement'
 import {UsersListLoading} from './user-edit-modal/loading/UsersListLoading'
+import FormatDate from '../../utils/FormatDate'
 
 const usersBreadcrumbs: Array<PageLink> = [
   {
@@ -93,13 +94,13 @@ const Users = () => {
 
               <div className='separator mt-3 opacity-75'></div>
 
-              <div className='menu-item px-3'>
+              {/* <div className='menu-item px-3'>
                 <div className='menu-content px-3 py-3'>
                   <a className='btn btn-primary btn-sm px-4' href='#'>
                     Generate Reports
                   </a>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
@@ -165,7 +166,7 @@ const Users = () => {
                           <span className='text-dark fw-bold text-hover-primary d-block mb-1 fs-6'></span>
                         </td> */}
                           <td className='text-dark fw-bold text-hover-primary fs-6'>
-                            {user.createdAt}
+                            {FormatDate(user.createdAt)}
                           </td>
                           <td>
                             <span className='badge badge-light-success'>
