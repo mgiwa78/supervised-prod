@@ -47,12 +47,12 @@ export function Login() {
         dispatch(loginSuccess(RESPONSE))
         navigate('/dashboard')
       } catch (error: any) {
+        console.log(error)
         setSubmitting(false)
         setLoading(false)
         dispatch(logout())
-        console.log(error.response.data.message)
 
-        if (error.response.data.message) {
+        if (error.response?.data.message) {
           return setStatus(error.response.data.message)
         }
         if (error.response?.data.error) {
