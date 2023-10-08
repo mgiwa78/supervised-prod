@@ -23,7 +23,7 @@ const Permissions = () => {
     },
   ]
   type PermissionsWithRole = {permission: Permission; roles: Array<Role>}
-  const [permissions, setPermissions] = useState<Array<PermissionsWithRole>>([])
+  const [permissions, setPermissions] = useState<Array<PermissionsWithRole> | null>(null)
   const {token} = useSelector(selectAuth)
 
   const getPermissions = async () => {
@@ -33,6 +33,7 @@ const Permissions = () => {
         setPermissions(RESPONSE.data)
       }
     } catch (error) {
+      setPermissions([])
       console.log(error)
     }
   }
@@ -132,21 +133,22 @@ const Permissions = () => {
                     </tr>
                   </thead>
                   <tbody className='fw-semibold text-gray-600'>
-                    {permissions.map((perm) => (
-                      <tr key={perm.permission._id} className='odd'>
-                        <td>{perm.permission.action}</td>
-                        <td>
-                          {perm.roles.map((role) => (
-                            <span key={role._id} className='badge badge-light-primary fs-7 m-1'>
-                              {role.name}
-                            </span>
-                          ))}
-                        </td>
-                        <td data-order={perm.permission.createdAt}>
-                          {FormatDate(perm.permission.createdAt)}
-                        </td>
-                        <td>{perm.permission.asset}</td>
-                        {/* <td className='text-end'>
+                    {permissions ? (
+                      permissions.map((perm) => (
+                        <tr key={perm.permission._id} className='odd'>
+                          <td>{perm.permission.action}</td>
+                          <td>
+                            {perm.roles.map((role) => (
+                              <span key={role._id} className='badge badge-light-primary fs-7 m-1'>
+                                {role.name}
+                              </span>
+                            ))}
+                          </td>
+                          <td data-order={perm.permission.createdAt}>
+                            {FormatDate(perm.permission.createdAt)}
+                          </td>
+                          <td>{perm.permission.asset}</td>
+                          {/* <td className='text-end'>
                           <button
                             className='btn btn-icon btn-active-light-primary w-30px h-30px me-3'
                             data-bs-toggle='modal'
@@ -173,8 +175,17 @@ const Permissions = () => {
                             </i>
                           </button>
                         </td> */}
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={4}>
+                          <div className='fv-row d-flex justify-content-center mh-300px'>
+                            <div className='h-40px w-40px spinner-border spinner-border-sm align-middle ms-2'></div>
+                          </div>
+                        </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               </div>

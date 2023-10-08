@@ -22,11 +22,11 @@ const AuthLayout = () => {
       style={{height: 'max-content'}}
     >
       {/* begin::Body */}
-      <div className='d-flex flex-column flex-lg-row-fluid w-lg-50 p-10 order-2 order-lg-1'>
+      <div className='d-flex flex-column flex-lg-row-fluid w-md-80  w-lg-50 p-10 order-2 order-lg-1'>
         {/* begin::Form */}
         <div className='d-flex flex-center flex-column flex-lg-row-fluid'>
           {/* begin::Wrapper */}
-          <div className='w-lg-500px p-10'>
+          <div className='w-lg-500px w-100 w-md-50 p-10'>
             <Outlet />
           </div>
           {/* end::Wrapper */}

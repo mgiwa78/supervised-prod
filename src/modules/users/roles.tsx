@@ -51,6 +51,7 @@ const Roles = () => {
         setRoles(RESPONSE.data)
       }
     } catch (error) {
+      setRoles([])
       console.log(error)
     }
   }
