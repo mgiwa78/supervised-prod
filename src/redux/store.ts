@@ -1,5 +1,6 @@
-import {configureStore, getDefaultMiddleware} from '@reduxjs/toolkit'
+import {combineReducers, configureStore, getDefaultMiddleware} from '@reduxjs/toolkit'
 import authReducer from './slice/authSlice'
+import documentReducer from './slice/documentSlice'
 import roleGuardMiddleware from '../middleware/roleGuardMiddleware'
 import logger from 'redux-logger'
 import {
@@ -15,11 +16,13 @@ import {
 import storage from 'redux-persist/lib/storage'
 
 const persistConfig = {
-  key: 'auth',
+  key: 'root',
   storage,
   version: 1,
 }
-const persistedAuthReducer = persistReducer(persistConfig, authReducer)
+const reducers = combineReducers({auth: authReducer, document: documentReducer})
+// const persistedAuthReducer = persistReducer(persistConfig, authReducer)
+const persistedReducer = persistReducer(persistConfig, reducers)
 
 let middleware = (getDefaultMiddleware) =>
   getDefaultMiddleware({
@@ -27,12 +30,6 @@ let middleware = (getDefaultMiddleware) =>
       ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
     },
   }).concat(roleGuardMiddleware)
-
-// extraReducers: (builder) => {
-//   builder.addCase(PURGE, (state) => {
-//     customEntityAdapter.removeAll(state)
-//   })
-// }
 
 if (process.env.NODE_ENV === 'development') {
   middleware = (getDefaultMiddleware) =>
@@ -44,9 +41,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const store = configureStore({
-  reducer: {
-    auth: persistedAuthReducer,
-  },
+  reducer: persistedReducer,
   middleware,
 })
 

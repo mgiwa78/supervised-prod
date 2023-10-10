@@ -10,7 +10,7 @@ const post = async (
   data: Object,
   authToken: string | null = null,
   isPrompt: boolean = false,
-  propt: string = ''
+  prompt: string = ''
 ) => {
   try {
     const RESPONSE = await axios.post(process.env.REACT_APP_API_URL + path, data, {
@@ -21,7 +21,7 @@ const post = async (
 
     isPrompt &&
       MySwal.fire({
-        text: 'Created Successfully',
+        text: prompt,
         icon: 'success',
         buttonsStyling: false,
         confirmButtonText: 'Ok!',

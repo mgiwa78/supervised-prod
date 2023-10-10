@@ -11,6 +11,9 @@ import {StudentRoutes} from './sub-routes/StudentsRoutes'
 import Users from '../modules/users/users'
 import Roles from '../modules/users/roles'
 import Permissions from '../modules/users/permissions'
+import CreateDocuments from '../modules/documents/createdocuments'
+import MyDocuments from '../modules/documents/mydocuments'
+import EditDocument from '../modules/documents/editDocument'
 
 const PrivateRoutes = () => {
   return (
@@ -37,7 +40,14 @@ const PrivateRoutes = () => {
           <Route path='permissions' element={<Permissions />} />
         </Route>
 
+        <Route path='/documents'>
+          <Route path='my' element={<MyDocuments />} />
+          <Route path='create' element={<CreateDocuments />} />
+          <Route path='edit/:documentID' element={<EditDocument />} />
+        </Route>
+
         <Route path='student' element={<StudentRoutes />} />
+
         <Route path='*' element={<Navigate to='/error/404' />} />
       </Route>
     </Routes>
