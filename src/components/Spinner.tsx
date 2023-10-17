@@ -12,7 +12,7 @@ const Spinner = () => {
     left: 'calc(50% - 4rem)',
   }
 
-  return <div style={{...styles, position: 'absolute', textAlign: 'center'}}> {''}Loading...</div>
+  return <div style={{...styles, position: 'absolute', textAlign: 'center'}}> Loading...</div>
 }
 
 export {Spinner}

@@ -25,12 +25,21 @@ const SidebarMenuMain = () => {
           <span className='menu-section text-muted text-uppercase fs-8 ls-1'>Menu</span>
         </div>
       </div>{' '}
-      {currentUser?.roles.some((role) => role.name === 'Superadmin') && (
+      {currentUser?.roles.some(
+        (role) => role.name === 'Superadmin' || role.name === 'Faculty Admin'
+      ) && (
         <SidebarMenuItemWithSub to='/users' title='Users' fontIcon='bi-people' icon='profile-user'>
           <>
-            <SidebarMenuItem to='/users/all' title='All' hasBullet={true} />
-            <SidebarMenuItem to='/users/roles' title='Roles' hasBullet={true} />
-            <SidebarMenuItem to='/users/permissions' title='Permissions' hasBullet={true} />
+            {currentUser?.roles.some((role) => role.name === 'Superadmin') && (
+              <>
+                <SidebarMenuItem to='/users/all' title='All' hasBullet={true} />
+                <SidebarMenuItem to='/users/roles' title='Roles' hasBullet={true} />
+                <SidebarMenuItem to='/users/permissions' title='Permissions' hasBullet={true} />
+              </>
+            )}
+            {currentUser?.roles.some((role) => role.name === 'Faculty Admin') && (
+              <SidebarMenuItem to='/users/supervisors' title='Supervisors' hasBullet={true} />
+            )}
           </>
         </SidebarMenuItemWithSub>
       )}
@@ -38,7 +47,7 @@ const SidebarMenuMain = () => {
         to='/documents'
         title='Documents'
         fontIcon='bi-people'
-        icon='profile-user'
+        icon='document'
       >
         <>
           {currentUser?.roles.some((role) => role.name === 'Student') && (
@@ -47,7 +56,9 @@ const SidebarMenuMain = () => {
               <SidebarMenuItem to='/documents/create' title='Create' hasBullet={true} />
             </>
           )}
-          {currentUser?.roles.some((role) => role.name === 'Superadmin') && (
+          {currentUser?.roles.some(
+            (role) => role.name === 'Superadmin' || role.name === 'Faculty Admin'
+          ) && (
             <>
               <SidebarMenuItem to='/documents/all' title='All Documents' hasBullet={true} />
             </>

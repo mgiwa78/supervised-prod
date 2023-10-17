@@ -12,6 +12,7 @@ import get from '../../../lib/get'
 import Role from '../../../types/Role'
 import {create} from 'domain'
 import Department from '../../../types/Department'
+import {selectAuth} from '../../../redux/selectors/auth'
 // import {createUser, updateUser} from '../core/_requests'
 // import {useQueryResponse} from '../core/QueryResponseProvider'
 
@@ -43,6 +44,7 @@ const editUserSchema = Yup.object().shape({
 })
 
 const UserEditModalForm: FC<Props> = ({state}) => {
+  const auth = useSelector(selectAuth)
   const {
     setItemIdForUpdate,
     updateUser,
@@ -386,85 +388,86 @@ const UserEditModalForm: FC<Props> = ({state}) => {
 
           {/* end::Input group */}
           {/* begin::Input group */}
-          <div className='mb-7'>
-            {/* begin::Label */}
-            <label className='required fw-bold fs-6 mb-5'>Role</label>
-            {/* end::Label */}
-            {/* begin::Roles */}
-            {/* begin::Input row */}
-            {roles.map((role: Role) => {
-              if (state.user._id)
-                return (
-                  <div
-                    className='form-check form-check-custom form-check-solid my-3'
-                    key={role._id}
-                  >
-                    <input
-                      className='form-check-input me-3'
-                      name={role.name}
-                      type='checkbox'
-                      defaultChecked={rolesState[role._id]}
-                      id='kt_modal_update_role_option_0'
-                      onClick={() => {
-                        if (userForEdit.rolesState) {
-                          console.log(2)
-                          console.log(userForEdit.rolesState[role._id])
-                          userForEdit.rolesState[role._id] = !userForEdit.rolesState[role._id]
-                        }
-                      }}
-                    />
+          {auth.user?.roles.some((role) => role.name === 'Superadmin') && (
+            <div className='mb-7'>
+              {/* begin::Label */}
+              <label className='required fw-bold fs-6 mb-5'>Role</label>
+              {/* end::Label */}
+              {/* begin::Roles */}
+              {/* begin::Input row */}
+              {roles.map((role: Role) => {
+                if (state.user._id)
+                  return (
+                    <div
+                      className='form-check form-check-custom form-check-solid my-3'
+                      key={role._id}
+                    >
+                      <input
+                        className='form-check-input me-3'
+                        name={role.name}
+                        type='checkbox'
+                        defaultChecked={rolesState[role._id]}
+                        id='kt_modal_update_role_option_0'
+                        onClick={() => {
+                          if (userForEdit.rolesState) {
+                            console.log(2)
+                            console.log(userForEdit.rolesState[role._id])
+                            userForEdit.rolesState[role._id] = !userForEdit.rolesState[role._id]
+                          }
+                        }}
+                      />
 
-                    {/* end::Input */}
-                    {/* begin::Label */}
-                    <label className='form-check-label' htmlFor='kt_modal_update_role_option_0'>
-                      <div className='fw-bolder text-gray-800'>
-                        {formik.values.roles.some((e) => e.name === role.name)
-                          ? 'This user is a '
-                          : ''}
-                        {role.name}
-                      </div>
-                      <div className='text-gray-600'>
-                        {/* Best for business owners and company administrators */}
-                      </div>
-                    </label>
-                    {/* end::Label */}
-                  </div>
-                )
-              else
-                return (
-                  <div
-                    className='form-check form-check-custom form-check-solid my-3'
-                    key={role._id}
-                  >
-                    {/* begin::Input */}
-                    <input
-                      className='form-check-input me-3'
-                      name={role._id}
-                      type='checkbox'
-                      onClick={() => {
-                        if (userForEdit.rolesState) {
-                          console.log(userForEdit.rolesState[role._id])
-                          userForEdit.rolesState[role._id] = !userForEdit.rolesState[role._id]
-                        }
-                      }}
-                      id='kt_modal_update_role_option_0'
-                    />
+                      {/* end::Input */}
+                      {/* begin::Label */}
+                      <label className='form-check-label' htmlFor='kt_modal_update_role_option_0'>
+                        <div className='fw-bolder text-gray-800'>
+                          {formik.values.roles.some((e) => e.name === role.name)
+                            ? 'This user is a '
+                            : ''}
+                          {role.name}
+                        </div>
+                        <div className='text-gray-600'>
+                          {/* Best for business owners and company administrators */}
+                        </div>
+                      </label>
+                      {/* end::Label */}
+                    </div>
+                  )
+                else
+                  return (
+                    <div
+                      className='form-check form-check-custom form-check-solid my-3'
+                      key={role._id}
+                    >
+                      {/* begin::Input */}
+                      <input
+                        className='form-check-input me-3'
+                        name={role._id}
+                        type='checkbox'
+                        onClick={() => {
+                          if (userForEdit.rolesState) {
+                            console.log(userForEdit.rolesState[role._id])
+                            userForEdit.rolesState[role._id] = !userForEdit.rolesState[role._id]
+                          }
+                        }}
+                        id='kt_modal_update_role_option_0'
+                      />
 
-                    {/* end::Input */}
-                    {/* begin::Label */}
-                    <label className='form-check-label' htmlFor='kt_modal_update_role_option_0'>
-                      <div className='fw-bolder text-gray-800'>{role.name}</div>
-                      <div className='text-gray-600'>
-                        {/* Best for business owners and company administrators */}
-                      </div>
-                    </label>
-                    {/* end::Label */}
-                  </div>
-                )
-            })}
+                      {/* end::Input */}
+                      {/* begin::Label */}
+                      <label className='form-check-label' htmlFor='kt_modal_update_role_option_0'>
+                        <div className='fw-bolder text-gray-800'>{role.name}</div>
+                        <div className='text-gray-600'>
+                          {/* Best for business owners and company administrators */}
+                        </div>
+                      </label>
+                      {/* end::Label */}
+                    </div>
+                  )
+              })}
 
-            {/* end::Input row */}
-            {/* <div className='separator separator-dashed my-5'></div>
+              {/* end::Input row */}
+              {/* <div className='separator separator-dashed my-5'></div>
             {/* begin::Input row
             <div className='d-flex fv-row'>
           
@@ -524,9 +527,10 @@ const UserEditModalForm: FC<Props> = ({state}) => {
               </div>
         
             </div> */}
-            {/* end::Input row */}
-            <div className='separator separator-dashed my-5'></div>
-          </div>
+              {/* end::Input row */}
+              <div className='separator separator-dashed my-5'></div>
+            </div>
+          )}
           {/* end::Input group */}
         </div>
         {/* end::Scroll */}

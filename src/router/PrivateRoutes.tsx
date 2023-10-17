@@ -14,6 +14,8 @@ import Permissions from '../modules/users/permissions'
 import CreateDocuments from '../modules/documents/createdocuments'
 import MyDocuments from '../modules/documents/mydocuments'
 import EditDocument from '../modules/documents/editDocument'
+import AllDocuments from '../modules/documents/allDocuments'
+import AllSupervisors from '../pages/users/supervisors'
 
 const PrivateRoutes = () => {
   return (
@@ -38,10 +40,12 @@ const PrivateRoutes = () => {
           <Route path='all' element={<Users />} />
           <Route path='roles' element={<Roles />} />
           <Route path='permissions' element={<Permissions />} />
+          <Route path='supervisors' element={<AllSupervisors />} />
         </Route>
 
         <Route path='/documents'>
           <Route path='my' element={<MyDocuments />} />
+          <Route path='all' element={<AllDocuments />} />
           <Route path='create' element={<CreateDocuments />} />
           <Route path='edit/:documentID' element={<EditDocument />} />
         </Route>

@@ -11,7 +11,8 @@ import post from '../../lib/post'
 import {selectAuth} from '../../redux/selectors/auth'
 import {ids} from 'webpack'
 import {useDropzone} from 'react-dropzone'
-import {handleFileUpload} from '../../utils/HandleFileUpload'
+import {handleFileUpload2} from '../../utils/HandleFileUpload'
+// import {convertDocxToHtml, handleFileUpload} from '../../utils/HandleFileUpload'
 
 const rolesBreadcrumbs: Array<PageLink> = [
   {
@@ -54,11 +55,14 @@ const CreateDocuments = () => {
   const {token} = useSelector(selectAuth)
 
   const [loading, setLoading] = useState(false)
-  const onDrop = (acceptedFiles) => {
+  const onDrop = async (acceptedFiles) => {
     console.log('Accepted Files:', acceptedFiles)
-    handleFileUpload(acceptedFiles[0])
-  }
 
+    const fileToHtml = await handleFileUpload2(acceptedFiles[0])
+    if (fileToHtml) {
+      formik.values.content = fileToHtml
+    }
+  }
   const {getRootProps, getInputProps} = useDropzone({
     onDrop,
   })
@@ -171,6 +175,9 @@ const CreateDocuments = () => {
                     Select Defualt template
                   </option>
                   <option value='blank'>blank</option>
+                  <option value='insert_content'>content</option>
+                  <option value='upload_word_file'>Upload Word file</option>
+                  <option value='upload_pdf_file'>Upload pdf file</option>
                 </select>
                 {formik.touched.defualtTemplate && formik.errors.defualtTemplate && (
                   <div className='fv-plugins-message-container'>
@@ -180,31 +187,39 @@ const CreateDocuments = () => {
                   </div>
                 )}
               </div>
-              <div className='col-6'>
-                <label className='form-label fs-6 fw-bold text-muted'>Content</label>
-                <textarea
-                  placeholder='Select Content'
-                  {...formik.getFieldProps('content')}
-                  className={clsx('form-control ')}
-                  name='content'
-                  autoComplete='off'
-                ></textarea>
-                {formik.touched.content && formik.errors.content && (
-                  <div className='fv-plugins-message-container'>
-                    <div className='fv-help-block'>
-                      <span role='alert'>{formik.errors.content}</span>
+              {formik.values.defualtTemplate === 'insert_content' ? (
+                <div className='col-6'>
+                  <label className='form-label fs-6 fw-bold text-muted'>Content</label>
+                  <textarea
+                    placeholder='Select Content'
+                    {...formik.getFieldProps('content')}
+                    className={clsx('form-control ')}
+                    name='content'
+                    autoComplete='off'
+                  ></textarea>
+                  {formik.touched.content && formik.errors.content && (
+                    <div className='fv-plugins-message-container'>
+                      <div className='fv-help-block'>
+                        <span role='alert'>{formik.errors.content}</span>
+                      </div>
                     </div>
+                  )}
+                </div>
+              ) : (
+                ''
+              )}
+              {formik.values.defualtTemplate === 'upload_word_file' ? (
+                <div className='col-6'>
+                  <div {...getRootProps()} className='dropzone'>
+                    <input {...getInputProps()} />
+                    <p>Drag & drop a file here, or click to select one</p>
                   </div>
-                )}
-              </div>
+                </div>
+              ) : (
+                ''
+              )}
             </div>
 
-            <div className='row my-10'>
-              <div {...getRootProps()} className='dropzone'>
-                <input {...getInputProps()} />
-                <p>Drag & drop a file here, or click to select one</p>
-              </div>
-            </div>
             <div className='row'>
               <div className='col-6'>
                 <button

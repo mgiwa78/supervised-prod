@@ -6,48 +6,67 @@ import get from '../../lib/get'
 import {useSelector} from 'react-redux'
 import {RootState} from '../../redux/store'
 import User from '../../types/User'
-import {UserEditModal} from './user-edit-modal/UserEditModal'
-import useUserManagement from './hooks/userManagement'
-import {UsersListLoading} from './user-edit-modal/loading/UsersListLoading'
 import FormatDate from '../../utils/FormatDate'
+import TDocument from '../../types/Document'
+import {Spinner} from '../../components/Spinner'
+import {Link, useNavigate} from 'react-router-dom'
+import {selectAuth} from '../../redux/selectors/auth'
+import AssignDocument from '../users/components/assignDocument'
 
-const Users = ({role = 'Users'}) => {
-  const token = useSelector((state: RootState) => state.auth.token)
-  // const [users, setUsers] = useState([])
-  const {
-    setItemIdForUpdate,
-    updateUser,
-    createUser,
-    RemoveUser,
-    selectUser,
-    getUserById,
-    getUsers,
-    users,
-    isLoading,
-    user,
-    allRoles,
-    error,
-    itemIdForUpdate,
-  } = useUserManagement()
+const documentsBreadcrumbs: Array<PageLink> = [
+  {
+    title: 'Documents',
+    path: '/documents/all',
+    isSeparator: false,
+    isActive: false,
+  },
+  {
+    title: '',
+    path: '',
+    isSeparator: true,
+    isActive: false,
+  },
+]
+
+const AllDocuments = () => {
+  const {token} = useSelector(selectAuth)
+  const [documents, setDocuments] = useState<Array<TDocument>>([])
+  const [doc, assginDoc] = useState<null | string>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+
+  const handleClose = () => {
+    assginDoc(null)
+  }
+  const navigate = useNavigate()
+
+  const getDocuments = async () => {
+    setIsLoading(true)
+    try {
+      if (token) {
+        const RESPONSE = await get('documents', token)
+        setDocuments(RESPONSE.data)
+        setIsLoading(false)
+      }
+    } catch (error) {
+      setIsLoading(false)
+      setDocuments([])
+      console.log(error)
+    }
+  }
 
   useEffect(() => {
-    if (!users && token) {
-      getUsers(token)
-    }
+    getDocuments()
   }, [])
 
-  const handleModalUpdate = (newuser: User | null) => {
-    newuser ? setItemIdForUpdate(newuser._id) : setItemIdForUpdate(null)
-    selectUser(newuser)
-  }
   return (
     <>
+      <PageTitle breadcrumbs={documentsBreadcrumbs}>All Documents </PageTitle>
       <div className={`card mb-5 mb-xl-8`}>
         <div className='card-header border-0 pt-5'>
           <h3 className='card-title align-items-start flex-column'>
-            <span className='card-label fw-bold fs-3 mb-1'>All {role}</span>
+            <span className='card-label fw-bold fs-3 mb-1'>All Documents</span>
             <span className='text-muted mt-1 fw-semibold fs-7'>
-              Total {role} {users ? users.length : ''}
+              Total documents {documents && documents.length}
             </span>
           </h3>
           <div className='card-toolbar'>
@@ -70,9 +89,9 @@ const Users = ({role = 'Users'}) => {
               <div className='separator mb-3 opacity-75'></div>
 
               <div className='menu-item px-3'>
-                <a onClick={() => handleModalUpdate(null)} className='menu-link px-3'>
-                  New {role}
-                </a>
+                <Link to='/documents/create' className='menu-link px-3'>
+                  New Document
+                </Link>
               </div>
 
               <div className='separator mt-3 opacity-75'></div>
@@ -103,21 +122,26 @@ const Users = ({role = 'Users'}) => {
                       />
                     </div>
                   </th>
-                  <th className='min-w-150px'>User Id</th>
-                  <th className='min-w-140px'>Name</th>
-                  <th className='min-w-120px'>Department</th>
+                  <th className='min-w-150px'>Document Id</th>
+                  <th className='min-w-140px'>Title</th>
+                  <th className='min-w-120px'>Description</th>
                   {/* <th className='min-w-120px'>Roles</th> */}
                   <th className='min-w-120px'>Created At</th>
-                  <th className='min-w-120px'>Role</th>
                   <th className='min-w-100px text-end'>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {isLoading ? <UsersListLoading /> : ''}
-                {users ? (
-                  users.map((user: User) => {
+                {isLoading && (
+                  <tr>
+                    <td colSpan={6}>
+                      <Spinner />
+                    </td>
+                  </tr>
+                )}
+                {documents &&
+                  documents.map((document: TDocument) => {
                     return (
-                      <tr key={user._id}>
+                      <tr key={document._id}>
                         <td>
                           <div className='form-check form-check-sm form-check-custom form-check-solid'>
                             <input
@@ -129,90 +153,58 @@ const Users = ({role = 'Users'}) => {
                         </td>
                         <td>
                           <span className='text-dark fw-bold text-hover-primary fs-6'>
-                            {user._id}
+                            {document._id}
                           </span>
                         </td>
                         <td>
                           <span className='text-dark fw-bold text-hover-primary d-block mb-1 fs-6'>
-                            {user.lastName} {user.firstName}
+                            {document.title}
                           </span>
-                          <span className='text-muted fw-semibold text-muted d-block fs-7'>
-                            {user.email}
-                          </span>
+                          <span className='text-muted fw-semibold text-muted d-block fs-7'></span>
                         </td>
-                        <td>
-                          <span className='text-dark fw-bold text-hover-primary d-block mb-1 fs-6'>
-                            {user.department.name}
-                          </span>
-                        </td>
+
                         {/* <td>
                           <span className='text-dark fw-bold text-hover-primary d-block mb-1 fs-6'></span>
                         </td> */}
                         <td className='text-dark fw-bold text-hover-primary fs-6'>
-                          {FormatDate(user.createdAt)}
+                          {document.description}
                         </td>
-                        <td>
-                          {user.roles.map((e) => (
-                            <span key={e._id} className='badge badge-light-success'>
-                              {e.name}
-                            </span>
-                          ))}
+                        <td className='text-dark fw-bold text-hover-primary fs-6'>
+                          {FormatDate(document.createdAt)}
                         </td>
+
                         <td className='text-end'>
-                          {/* <a
-                              href='#'
-                              className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
-                            >
-                              <KTIcon iconName='switch' className='fs-3' />
-                            </a> */}
                           <span
-                            onClick={() => handleModalUpdate(user)}
+                            onClick={() => assginDoc(document._id)}
+                            title='Assign'
+                            className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
+                          >
+                            <KTIcon iconName='switch' className='fs-3' />
+                          </span>
+                          <Link
+                            to={`/documents/edit/${document._id}`}
                             className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1 mr-1'
                           >
                             <KTIcon iconName='pencil' className='fs-3' />
-                          </span>
+                          </Link>
                           {/* <a
-                              href='#'
-                              className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm'
-                            >
-                              <KTIcon iconName='trash' className='fs-3' />
-                            </a> */}
+                            href='#'
+                            className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm'
+                          >
+                            <KTIcon iconName='trash' className='fs-3' />
+                          </a> */}
                         </td>
                       </tr>
                     )
-                  })
-                ) : (
-                  <tr>
-                    <td colSpan={7}>
-                      <div className='fv-row d-flex justify-content-center mh-300px'>
-                        <div className='h-40px w-40px spinner-border spinner-border-sm align-middle ms-2'></div>
-                      </div>
-                    </td>
-                  </tr>
-                )}
+                  })}
               </tbody>
             </table>
           </div>
         </div>
       </div>
-      {itemIdForUpdate !== undefined && (
-        <UserEditModal
-          state={{
-            setItemIdForUpdate,
-            updateUser,
-            createUser,
-            RemoveUser,
-            getUserById,
-            isLoading,
-            user,
-            error,
-            allRoles,
-            itemIdForUpdate,
-          }}
-        />
-      )}
+      {doc && <AssignDocument doc={doc} handleClose={handleClose} />}
     </>
   )
 }
 
-export default Users
+export default AllDocuments

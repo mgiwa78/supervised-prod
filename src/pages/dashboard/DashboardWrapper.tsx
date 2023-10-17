@@ -30,7 +30,7 @@ const DashboardPage: FC = () => {
     <>
       {auth.user?.roles.some((role) => role.name === 'Superadmin') ? <AdminDashboard /> : ''}
       {auth.user?.roles.some((role) => role.name === 'Student') ? <StudentDashboard /> : ''}
-      {auth.user?.roles.some((role) => role.name === 'Instructor') ? <InstructorDashboard /> : ''}
+      {auth.user?.roles.some((role) => role.name === 'Supervisor') ? <InstructorDashboard /> : ''}
     </>
   )
 }

@@ -36,7 +36,7 @@ const put = async (
     return RESPONSE.data
   } catch (error: any) {
     if (error.response?.data.errors) {
-      MySwal.fire({
+      return MySwal.fire({
         icon: 'error',
         html:
           '<div class="text-left align-left">' +
@@ -54,7 +54,7 @@ const put = async (
     }
 
     if (error.response.data.error) {
-      MySwal.fire({
+      return MySwal.fire({
         text: error.response.data.error,
         icon: 'error',
         buttonsStyling: false,
@@ -66,7 +66,7 @@ const put = async (
       }).then(() => {})
     }
     if (error.response.status === 401) {
-      MySwal.fire({
+      return MySwal.fire({
         text: 'Unauthorised',
         icon: 'error',
         buttonsStyling: false,
@@ -78,7 +78,7 @@ const put = async (
       }).then(() => {})
     }
     if (error.response.status === 403) {
-      MySwal.fire({
+      return MySwal.fire({
         text: 'Permission Denied',
         icon: 'error',
         buttonsStyling: false,
@@ -90,7 +90,7 @@ const put = async (
       }).then(() => {})
     }
     if (error.response.status === 500) {
-      MySwal.fire({
+      return MySwal.fire({
         text: 'Internal server error',
         icon: 'error',
         buttonsStyling: false,
@@ -101,7 +101,7 @@ const put = async (
         },
       }).then(() => {})
     } else {
-      MySwal.fire({
+      return MySwal.fire({
         text: error.message,
         icon: 'error',
         buttonsStyling: false,
