@@ -1,7 +1,9 @@
 import axios, {AxiosError} from 'axios'
+import {useDispatch} from 'react-redux'
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import {logout} from '../redux/slice/authSlice'
 
 const MySwal = withReactContent(Swal)
 
@@ -35,6 +37,61 @@ const put = async (
     }
     return RESPONSE.data
   } catch (error: any) {
+    console.log(error)
+
+    if (error.response.status === 401) {
+      return MySwal.fire({
+        text: 'Unauthorised',
+        icon: 'error',
+        buttonsStyling: false,
+        confirmButtonText: 'Ok!',
+        heightAuto: false,
+        customClass: {
+          confirmButton: 'btn btn-danger',
+        },
+      }).then(() => {})
+    }
+    if (error.response.status === 407) {
+      console.log('first')
+      return MySwal.fire({
+        text: 'Athentication Required',
+        icon: 'error',
+        buttonsStyling: false,
+        confirmButtonText: 'Ok!',
+        heightAuto: false,
+        customClass: {
+          confirmButton: 'btn btn-danger',
+        },
+      }).then(() => {
+        const dispatch = useDispatch()
+        dispatch(logout)
+      })
+    }
+    if (error.response.status === 403) {
+      return MySwal.fire({
+        text: 'Permission Denied',
+        icon: 'error',
+        buttonsStyling: false,
+        confirmButtonText: 'Ok!',
+        heightAuto: false,
+        customClass: {
+          confirmButton: 'btn btn-danger',
+        },
+      }).then(() => {})
+    }
+    if (error.response.status === 500) {
+      return MySwal.fire({
+        text: 'Internal server error',
+        icon: 'error',
+        buttonsStyling: false,
+        confirmButtonText: 'Ok!',
+        heightAuto: false,
+        customClass: {
+          confirmButton: 'btn btn-danger',
+        },
+      }).then(() => {})
+    }
+
     if (error.response?.data.errors) {
       return MySwal.fire({
         icon: 'error',
@@ -52,46 +109,9 @@ const put = async (
         },
       }).then(() => {})
     }
-
     if (error.response.data.error) {
       return MySwal.fire({
         text: error.response.data.error,
-        icon: 'error',
-        buttonsStyling: false,
-        confirmButtonText: 'Ok!',
-        heightAuto: false,
-        customClass: {
-          confirmButton: 'btn btn-danger',
-        },
-      }).then(() => {})
-    }
-    if (error.response.status === 401) {
-      return MySwal.fire({
-        text: 'Unauthorised',
-        icon: 'error',
-        buttonsStyling: false,
-        confirmButtonText: 'Ok!',
-        heightAuto: false,
-        customClass: {
-          confirmButton: 'btn btn-danger',
-        },
-      }).then(() => {})
-    }
-    if (error.response.status === 403) {
-      return MySwal.fire({
-        text: 'Permission Denied',
-        icon: 'error',
-        buttonsStyling: false,
-        confirmButtonText: 'Ok!',
-        heightAuto: false,
-        customClass: {
-          confirmButton: 'btn btn-danger',
-        },
-      }).then(() => {})
-    }
-    if (error.response.status === 500) {
-      return MySwal.fire({
-        text: 'Internal server error',
         icon: 'error',
         buttonsStyling: false,
         confirmButtonText: 'Ok!',
