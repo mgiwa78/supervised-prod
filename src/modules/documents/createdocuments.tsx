@@ -11,7 +11,8 @@ import post from '../../lib/post'
 import {selectAuth} from '../../redux/selectors/auth'
 import {ids} from 'webpack'
 import {useDropzone} from 'react-dropzone'
-import {handleFileUpload2} from '../../utils/HandleFileUpload'
+import {toAbsoluteUrl} from '../../_metronic/helpers'
+// import {handleFileUpload2} from '../../utils/HandleFileUpload'
 // import {convertDocxToHtml, handleFileUpload} from '../../utils/HandleFileUpload'
 
 const rolesBreadcrumbs: Array<PageLink> = [
@@ -52,17 +53,24 @@ const initialValues = {
 }
 
 const CreateDocuments = () => {
+  const [fileContent, setFileContent] = useState<string | null>(null)
+
   const {token} = useSelector(selectAuth)
 
   const [loading, setLoading] = useState(false)
-  const onDrop = async (acceptedFiles) => {
-    console.log('Accepted Files:', acceptedFiles)
 
-    const fileToHtml = await handleFileUpload2(acceptedFiles[0])
-    if (fileToHtml) {
-      formik.values.content = fileToHtml
-    }
+  const onDrop = async (acceptedFiles: Array<File>) => {
+    const file = acceptedFiles[0]
+    const formData = new FormData()
+
+    formData.append('content', file)
+
+    const RESPONSE: any = await post('documents/convertToWord', formData, token, false)
+
+    setFileContent(RESPONSE.contentToHtml)
+    formik.values.content = RESPONSE.contentToHtml
   }
+
   const {getRootProps, getInputProps} = useDropzone({
     onDrop,
   })
@@ -220,6 +228,18 @@ const CreateDocuments = () => {
               )}
             </div>
 
+            {fileContent && (
+              <div className='row mb-5'>
+                <div className='col-6'>
+                  <div className='symbol symbol-50px me-5'>
+                    <label htmlFor=''>Document uploaded</label>
+                    <div>
+                      <img alt='Logo' src={toAbsoluteUrl('/media/svg/files/doc.svg')} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
             <div className='row'>
               <div className='col-6'>
                 <button

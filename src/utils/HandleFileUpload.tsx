@@ -1,7 +1,9 @@
 // // import * as pdfjs from 'pdfjs-dist'
 
-import {ChangeEvent} from 'react'
-import mammoth from 'mammoth'
+// import {ChangeEvent} from 'react'
+export {}
+// console.log('first')
+// import mammoth from 'mammoth'
 // // export const handleFileUpload = (file: any) => {
 // //   return new Promise<string>(async (resolve, reject) => {
 // //     let pdfText = ''
@@ -114,10 +116,10 @@ import mammoth from 'mammoth'
 //   }
 // }
 
-export const handleFileUpload2 = async (file: File) => {
-  if (file) {
-    const arrayBuffer = await file.arrayBuffer()
-    const result = await mammoth.convertToHtml({arrayBuffer})
-    return result.value
-  }
-}
+// export const handleFileUpload2 = async (file: File) => {
+//   if (file) {
+//     const arrayBuffer = await file.arrayBuffer()
+//     const result = await mammoth.convertToHtml({arrayBuffer})
+//     return result.value
+//   }
+// }
