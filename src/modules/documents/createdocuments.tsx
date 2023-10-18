@@ -43,10 +43,6 @@ const loginSchema = Yup.object().shape({
     .min(5, 'Minimum description lenght is 5')
     .max(50, 'Maximum description lenght is 50')
     .required('Document Description is required'),
-  //   defualtTemplate: Yup.string()
-  //     .min(5, 'Minimum description lenght is 5')
-  //     .max(50, 'Maximum description lenght is 50')
-  //     .required('Document Description is required'),
 })
 
 const initialValues = {
@@ -69,74 +65,36 @@ const CreateDocuments = () => {
     const file = acceptedFiles[0]
 
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
-   console.log(file)
+    console.log(file)
     if (file) {
       console.log(file)
       const AB = await file.arrayBuffer()
-      // const storageRef = ref(storage, `uploads/docs/${file.name + '_' + uniqueSuffix}`)
-      // const pathReference = ref(storage, 'images/stars.jpg')
+
       const result = await mammoth.convertToHtml({arrayBuffer: AB})
 
       setFileContent(result.value)
+      formik.values.content = result.value
       setFileUploadState('complete')
-
-      // await uploadBytes(storageRef, file)
-      //   .then((snapshot) => {
-      //     console.log(snapshot)
-      //     console.log('File uploaded successfully')
-      //   })
-      //   .catch((error) => {
-      //     console.error('Error uploading file:', error)
-      //   })
-
-      // await getDownloadURL(storageRef)
-      //   .then((url) => {
-      //     // `url` is the download URL for 'images/stars.jpg'
-
-      //     // This can be downloaded directly:
-      //     const xhr = new XMLHttpRequest()
-      //     xhr.responseType = 'blob'
-      //     xhr.onload = (event) => {
-      //       const blob = xhr.response
-      //     }
-      //     xhr.open('GET', url)
-      //     xhr.send()
-      //     urlPath = url
-      //     console.log(url)
-      //   })
-      //   .catch((error) => {
-      //     console.log(error)
-      //   })
-
-      // const RESPONSE: any = await post(
-      //   'documents/convertToWord',
-      //   {content_url: urlPath},
-      //   token,
-      //   false
-      // )
-
-      // setFileContent(RESPONSE.contentToHtml)
-      // formik.values.content = RESPONSE.contentToHtml
     }
   }
 
-  const {getRootProps, getInputProps} = useDropzone({
+  const {getRootProps, getInputProps, acceptedFiles} = useDropzone({
     onDrop,
   })
+  const files = acceptedFiles.map((file: any) => <li key={file.path}>{file.path}</li>)
 
   const formik = useFormik({
     initialValues,
     validationSchema: loginSchema,
     onSubmit: async (values, {setStatus, setSubmitting}) => {
       setLoading(true)
+      console.log('asdda')
       try {
         console.log(values)
         const RESPONSE: any = await post('documents', values, token, true, 'Document Created')
 
         console.log(RESPONSE)
 
-        // dispatch(loginSuccess(RESPONSE))
-        // navigate('/dashboard')
         setSubmitting(false)
         setLoading(false)
       } catch (error: any) {
@@ -155,7 +113,12 @@ const CreateDocuments = () => {
       }
     },
   })
-
+  // const handleFormatChange = (e: any) => {
+  //   console.log(e.target.value)
+  //   if (e.target.value !== 'upload_word_file') {
+  //     setFileContent(null)
+  //   }
+  // }
   return (
     <>
       <PageTitle breadcrumbs={rolesBreadcrumbs}>Create Document</PageTitle>
@@ -246,7 +209,6 @@ const CreateDocuments = () => {
               </div>
               {formik.values.defualtTemplate === 'insert_content' ? (
                 <div className='col-6'>
-                  <label className='form-label fs-6 fw-bold text-muted'>Content</label>
                   <textarea
                     placeholder='Select Content'
                     {...formik.getFieldProps('content')}
@@ -267,6 +229,9 @@ const CreateDocuments = () => {
               )}
               {formik.values.defualtTemplate === 'upload_word_file' ? (
                 <div className='col-6'>
+                  <label className='form-label fs-6 fw-bold text-muted'>
+                    <h4>Files : {files}</h4>
+                  </label>{' '}
                   <div
                     {...getRootProps()}
                     className={`dropzone ${fileUploadState === 'complete' ? 'bg-success' : ''}`}
@@ -275,7 +240,10 @@ const CreateDocuments = () => {
                     }}
                   >
                     <input {...getInputProps()} />
-                    <p>Drag & drop a file here, or click to select one</p>
+                    <p>
+                      {fileContent && 'File Added'}
+                      {!fileContent && 'Drag & drop a file here, or click to select one'}
+                    </p>
                   </div>
                 </div>
               ) : (
@@ -283,18 +251,6 @@ const CreateDocuments = () => {
               )}
             </div>
 
-            {fileContent && (
-              <div className='row mb-5'>
-                <div className='col-6'>
-                  <div className='symbol symbol-50px me-5'>
-                    <label htmlFor=''>Document uploaded</label>
-                    <div>
-                      <img alt='Logo' src={toAbsoluteUrl('/media/svg/files/doc.svg')} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
             <div className='row'>
               <div className='col-6'>
                 <button

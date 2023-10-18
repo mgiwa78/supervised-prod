@@ -20,8 +20,23 @@ import get from '../../../lib/get'
 
 const allRoles = [{name: 'Superadmin'}, {name: 'Student'}, {name: 'Supervisor'}]
 
+type InitialState = {
+  user: {
+    avatar: string
+    position: string
+    role: string
+    name: string
+    email: string
+  }
+  allRoles: {
+    name: string
+  }[]
+  users: any
+  isLoading: boolean
+  itemIdForUpdate: any
+}
 function createInitialState() {
-  const initialState = {
+  const initialState: InitialState = {
     user: {
       avatar: 'avatars/300-6.jpg',
       position: 'Art Director',
@@ -40,7 +55,7 @@ function createInitialState() {
 }
 
 // Define your reducer function
-const reducer = (state, action) => {
+const reducer = (state: any, action: any) => {
   switch (action.type) {
     case 'SetItemIdForUpdate':
       return {...state, itemIdForUpdate: action.payload}
@@ -57,10 +72,10 @@ const reducer = (state, action) => {
     case 'SetLoading':
       return {...state, error: action.payload}
     case 'selectUser':
-      const rolesStatus = {}
+      const rolesStatus: any = {}
       if (action.payload) {
         allRoles.map((r) => {
-          return (rolesStatus[r.name] = action.payload.roles.some((e) => e.name === r.name))
+          return (rolesStatus[r.name] = action.payload.roles.some((e: any) => e.name === r.name))
         })
       }
       return {
@@ -83,15 +98,15 @@ const useUserManagement = () => {
   const isLoading = false
   const RemoveUser = () => dispatch({type: 'RemoveUser'})
 
-  const createUser = async (newUserData, token) => {
+  const createUser = async (newUserData: any, token: any) => {
     const RESPONSE = await post(`users`, newUserData, token, true, 'User Updated')
 
     // dispatch({type: 'CreateUser', payload: values})
   }
 
-  const getUserById = (id) => dispatch({type: 'getUserById', payload: id})
+  const getUserById = (id: any) => dispatch({type: 'getUserById', payload: id})
 
-  const selectUser = async (userData) => {
+  const selectUser = async (userData: any) => {
     dispatch({type: 'selectUser', payload: userData})
   }
   const getUsers = async (token: string) => {
@@ -108,14 +123,14 @@ const useUserManagement = () => {
       // setRoles(RESPONSE2.data)
     }
   }
-  const updateUser = async (newUserData, token) => {
+  const updateUser = async (newUserData: any, token: any) => {
     // UpdateLoading(true)
     const RESPONSE = await put(`users/${newUserData._id}`, newUserData, token, true, 'User Updated')
     // UpdateLoading(false)
     // dispatch({type: 'UpdateUser', payload: newUserData})
   }
 
-  const setItemIdForUpdate = (id) => {
+  const setItemIdForUpdate = (id: any) => {
     return dispatch({type: 'SetItemIdForUpdate', payload: id})
   }
 

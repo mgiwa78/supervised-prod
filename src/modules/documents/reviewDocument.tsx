@@ -16,22 +16,26 @@ import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import Quill from 'quill'
 import put from '../../lib/put'
+import CustomHighlighting from '../../utils/custom-highlighting'
+import hljs from 'highlight.js'
+import 'highlight.js/styles/monokai-sublime.css'
+import EditorToolbar, {modules, formats} from '../../quill/Toolbar'
 
-const EditDocument = () => {
+const ReviewDocument = () => {
   const {token} = useSelector(selectAuth)
   const {documentID} = useParams()
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
 
   const editorRef = useRef<HTMLDivElement | null>(null)
   const [quill, setQuill] = useState<Quill | null>(null)
 
-  const [document, setDocument] = useState<TDocument | null>(null)
+  const [assignedDocument, setAssignedDocument] = useState<TDocument | null>(null)
   const [content, setContent] = useState<any>('')
-  const dispatch = useDispatch()
 
   const doc = useSelector(selectDocumentForEdit)
-  const editdocumentsBreadcrumbs: Array<PageLink> = [
+  const reviewDocumentsBreadcrumbs: Array<PageLink> = [
     {
       title: 'Documents',
       path: '/users/all',
@@ -46,61 +50,36 @@ const EditDocument = () => {
     },
   ]
 
-  const getDocument = async () => {
+  const getAssignedDocument = async () => {
     setIsLoading(true)
     try {
       if (token) {
-        const RESPONSE = await get(`documents/${documentID}`, token)
-        setDocument(RESPONSE.data)
-        console.log(RESPONSE.data)
-
-        // dispatch(setDocForEdit({document: RESPONSE.data}))
+        const RESPONSE = await get(`documents/assigned/${documentID}`, token)
+        setAssignedDocument(RESPONSE.data)
+        setContent(RESPONSE.data.content)
 
         setIsLoading(false)
       }
     } catch (error) {
       setIsLoading(false)
-      setDocument(null)
+      setAssignedDocument(null)
       console.log(error)
     }
   }
 
   useEffect(() => {
-    // dispatch(setDocForEdit({document: null}))
-    getDocument()
-
-    // if (doc) {
-    //   setDocument(doc)
-    //   setContent(doc.content)
-    //   setIsLoading(false)
-    // }
+    getAssignedDocument()
   }, [])
-  useEffect(() => {
-    if (document) if (quill) quill.clipboard.dangerouslyPasteHTML(document.content)
-  }, [document])
 
-  const formats = [
-    'header',
-    'bold',
-    'italic',
-    'underline',
-    'strike',
-    'blockquote',
-    'list',
-    'bullet',
-    'indent',
-    'link',
-    'image',
-  ]
-  const modules = {
-    toolbar: [
-      [{header: [1, 2, false]}],
-      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-      [{list: 'ordered'}, {list: 'bullet'}, {indent: '-1'}, {indent: '+1'}],
-      ['link', 'image'],
-      ['clean'],
-    ],
-  }
+  useEffect(() => {
+    if (assignedDocument) {
+      if (quill) {
+        console.log('first')
+        // quill.clipboard.dangerouslyPasteHTML(assignedDocument.content)
+      }
+    }
+  }, [assignedDocument])
+
   // dispatch(setDocForEdit({document: null}))
   // const editor = reactQuillRef.getEditor()
   // const unprivilegedEditor = reactQuillRef.makeUnprivilegedEditor(editor)
@@ -110,12 +89,16 @@ const EditDocument = () => {
       const editor = new Quill('#editor', {
         theme: 'snow',
         modules: {
+          syntax: {
+            highlight: (text: any) => hljs.highlightAuto(text).value,
+          },
           toolbar: [
             [{header: [1, 2, false]}],
             ['bold', 'italic', 'underline', 'strike', 'blockquote'],
             [{list: 'ordered'}, {list: 'bullet'}, {indent: '-1'}, {indent: '+1'}],
             ['link', 'image'],
             ['clean'],
+            ['highlight'],
           ],
         },
         formats: [
@@ -137,11 +120,12 @@ const EditDocument = () => {
       setQuill(editor)
     }
   }, [])
-
+  const handleChange = (value: any) => {
+    setContent(value)
+  }
   const handleDocumentUpdate = async (e: any) => {
     e.preventDefault()
     if (quill) {
-      console.log(quill.root.innerHTML)
       const RESPONSE = await put(
         `documents/${documentID}`,
         {...document, content: quill.root.innerHTML},
@@ -149,26 +133,38 @@ const EditDocument = () => {
         true,
         'Document Updated'
       )
-      console.log(RESPONSE.data)
     }
 
     setIsLoading(false)
   }
+
   return (
     <>
-      <PageTitle breadcrumbs={editdocumentsBreadcrumbs}>Edit Document </PageTitle>
+      <PageTitle breadcrumbs={reviewDocumentsBreadcrumbs}>Review Document </PageTitle>
       {isLoading && <Spinner />}
 
       <div>
-        <h2 className='my-3'>{document?.title}</h2>
+        <h2 className='my-3'>{assignedDocument?.title}</h2>
       </div>
+
       <div className='card'>
         <div className='card-body'>
-          <div id='editor'>{content}</div>
+          {/* <div id='editor'>{content}</div> */}
+          <EditorToolbar />
+          {assignedDocument && (
+            <ReactQuill
+              theme='snow'
+              value={content}
+              onChange={handleChange}
+              placeholder={'Write something awesome...'}
+              modules={modules}
+              formats={formats}
+            />
+          )}
         </div>
         <div className='card-footer'>
           <button className='btn btn-primary' onClick={(e) => handleDocumentUpdate(e)}>
-            {!loading && <span className='indicator-label'>Save Changes</span>}
+            {!loading && <span className='indicator-label'>Save Review</span>}
             {loading && (
               <span className='indicator-progress' style={{display: 'block'}}>
                 Please wait...
@@ -182,4 +178,4 @@ const EditDocument = () => {
   )
 }
 
-export default EditDocument
+export default ReviewDocument

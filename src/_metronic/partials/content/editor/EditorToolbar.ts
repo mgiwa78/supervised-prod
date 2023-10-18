@@ -1,4 +1,4 @@
-export const editorToolbarSettings = {
+export const editorToolbarSettings: any = {
   options: ['inline', 'fontSize', 'fontFamily', 'link', 'image'],
   inline: {
     inDropdown: false,

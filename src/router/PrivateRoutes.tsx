@@ -16,6 +16,8 @@ import MyDocuments from '../modules/documents/mydocuments'
 import EditDocument from '../modules/documents/editDocument'
 import AllDocuments from '../modules/documents/allDocuments'
 import AllSupervisors from '../pages/users/supervisors'
+import AssignedDocument from '../modules/documents/assignedDocuments'
+import ReviewDocument from '../modules/documents/reviewDocument'
 
 const PrivateRoutes = () => {
   return (
@@ -45,8 +47,10 @@ const PrivateRoutes = () => {
 
         <Route path='/documents'>
           <Route path='my' element={<MyDocuments />} />
+          <Route path='review/:documentID' element={<ReviewDocument />} />
           <Route path='all' element={<AllDocuments />} />
           <Route path='create' element={<CreateDocuments />} />
+          <Route path='assigned' element={<AssignedDocument />} />
           <Route path='edit/:documentID' element={<EditDocument />} />
         </Route>
 

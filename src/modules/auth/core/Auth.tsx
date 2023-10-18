@@ -17,15 +17,15 @@ import {WithChildren} from '../../../_metronic/helpers'
 type AuthContextProps = {
   auth: AuthModel | undefined
   saveAuth: (auth: AuthModel | undefined) => void
-  currentUser: UserModel | undefined
+  currentUser: UserModel | undefined | any | null
   setCurrentUser: Dispatch<SetStateAction<UserModel | undefined>>
   logout: () => void
 }
 
-const initAuthContextPropsState = {
+const initAuthContextPropsState: AuthContextProps = {
   auth: authHelper.getAuth(),
   saveAuth: () => {},
-  currentUser: undefined,
+  currentUser: null,
   setCurrentUser: () => {},
   logout: () => {},
 }

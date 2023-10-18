@@ -2,7 +2,7 @@ import {useEffect} from 'react'
 import {UserEditModalHeader} from './UserEditModalHeader'
 import {UserEditModalFormWrapper} from './UserEditModalFormWrapper'
 
-const UserEditModal = ({state}) => {
+const UserEditModal = ({state}: {state: any}) => {
   useEffect(() => {
     document.body.classList.add('modal-open')
     return () => {

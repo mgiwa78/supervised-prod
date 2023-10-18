@@ -17,7 +17,7 @@ import DocumentTable from '../../components/documentTable'
 const documentsBreadcrumbs: Array<PageLink> = [
   {
     title: 'Documents',
-    path: '/documents/all',
+    path: '/documents/assigned',
     isSeparator: false,
     isActive: false,
   },
@@ -29,7 +29,7 @@ const documentsBreadcrumbs: Array<PageLink> = [
   },
 ]
 
-const AllDocuments = () => {
+const AssignedDocument = () => {
   const {token} = useSelector(selectAuth)
   const [documents, setDocuments] = useState<Array<TDocument>>([])
   const [doc, assginDoc] = useState<null | string>(null)
@@ -38,13 +38,12 @@ const AllDocuments = () => {
   const handleClose = () => {
     assginDoc(null)
   }
-  const navigate = useNavigate()
 
   const getDocuments = async () => {
     setIsLoading(true)
     try {
       if (token) {
-        const RESPONSE = await get('documents', token)
+        const RESPONSE = await get('documents/assigned', token)
         setDocuments(RESPONSE.data)
         setIsLoading(false)
       }
@@ -61,9 +60,9 @@ const AllDocuments = () => {
 
   return (
     <>
-      <PageTitle breadcrumbs={documentsBreadcrumbs}>All Documents </PageTitle>
+      <PageTitle breadcrumbs={documentsBreadcrumbs}>All Assigned Documents </PageTitle>
       <DocumentTable
-        title='All Documents'
+        title='Assigned Documents'
         documents={documents}
         assginDoc={assginDoc}
         isLoading={isLoading}
@@ -73,4 +72,4 @@ const AllDocuments = () => {
   )
 }
 
-export default AllDocuments
+export default AssignedDocument

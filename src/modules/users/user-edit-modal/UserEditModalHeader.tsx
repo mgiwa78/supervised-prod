@@ -3,7 +3,7 @@ import User from '../../../types/User'
 import useUserManagement from '../hooks/userManagement'
 // import {useListView} from '../core/ListViewProvider'
 
-const UserEditModalHeader = ({state}) => {
+const UserEditModalHeader = ({state}: {state: any}) => {
   // const {setItemIdForUpdate} = useListView()
   const {setItemIdForUpdate, itemIdForUpdate, selectUser, RemoveUser} = state
 

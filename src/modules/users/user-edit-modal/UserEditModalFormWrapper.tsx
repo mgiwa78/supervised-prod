@@ -5,7 +5,7 @@ import useUserManagement from '../hooks/userManagement'
 // import {useListView} from '../core/ListViewProvider'
 // import {getUserById} from '../core/_requests'
 
-const UserEditModalFormWrapper = ({state}) => {
+const UserEditModalFormWrapper = ({state}: {state: any}) => {
   const {itemIdForUpdate, isLoading, user, error} = state
   const enabledQuery: boolean = isNotEmpty(itemIdForUpdate)
 

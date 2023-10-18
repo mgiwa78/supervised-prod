@@ -10,7 +10,10 @@ import * as Yup from 'yup'
 import {FastField, useFormik} from 'formik'
 import post from '../../../lib/post'
 import clsx from 'clsx'
-
+interface All {
+  name: string
+  permissions: any
+}
 const modalsRoot = document.getElementById('root-modals') || document.body
 
 const createRoleSchema = Yup.object().shape({
@@ -21,7 +24,7 @@ const createRoleSchema = Yup.object().shape({
 })
 
 const CreateRole = ({show, handleClose}: {show: boolean; handleClose: Function}) => {
-  const initialValues = {
+  const initialValues: All = {
     name: '',
     permissions: {},
   }
@@ -36,7 +39,7 @@ const CreateRole = ({show, handleClose}: {show: boolean; handleClose: Function})
     }
   }
 
-  const handleChange = (e, id) => {
+  const handleChange = (e: any, id: any) => {
     e.target.checked = formik.values.permissions[id]?.state
       ? !formik.values.permissions[id].state
       : true

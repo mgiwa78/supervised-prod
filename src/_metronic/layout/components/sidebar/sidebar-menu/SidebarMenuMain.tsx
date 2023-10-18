@@ -19,7 +19,9 @@ const SidebarMenuMain = () => {
         title={intl.formatMessage({id: 'MENU.DASHBOARD'})}
         fontIcon='bi-app-indicator'
       />
-      <SidebarMenuItem to='/builder' icon='switch' title='Layout Builder' fontIcon='bi-layers' />
+      {currentUser?.roles.some((role) => role.name === 'Superadmin') && (
+        <SidebarMenuItem to='/builder' icon='switch' title='Layout Builder' fontIcon='bi-layers' />
+      )}
       <div className='menu-item'>
         <div className='menu-content pt-8 pb-2'>
           <span className='menu-section text-muted text-uppercase fs-8 ls-1'>Menu</span>
@@ -54,6 +56,11 @@ const SidebarMenuMain = () => {
             <>
               <SidebarMenuItem to='/documents/my' title='My Documents' hasBullet={true} />
               <SidebarMenuItem to='/documents/create' title='Create' hasBullet={true} />
+            </>
+          )}
+          {currentUser?.roles.some((role) => role.name === 'Supervisor') && (
+            <>
+              <SidebarMenuItem to='/documents/assigned' title='Assigned' hasBullet={true} />
             </>
           )}
           {currentUser?.roles.some(

@@ -11,6 +11,12 @@ import {FastField, useFormik} from 'formik'
 import post from '../../../lib/post'
 import clsx from 'clsx'
 import put from '../../../lib/put'
+interface StatusType {
+  [key: string]: {
+    state: boolean
+    id: string
+  }
+}
 
 const modalsRoot = document.getElementById('root-modals') || document.body
 
@@ -30,12 +36,12 @@ const EditRole = ({
   editRole?: Role
   handleClose: Function
 }) => {
-  const status = {}
+  const status: StatusType = {}
   editRole?.permissions.forEach((e) => {
     return (status[e._id] = {state: true, id: e._id})
   })
   console.log(status)
-  const initialValues = {permissions: [], ...editRole, status}
+  const initialValues: any = {permissions: [], ...editRole, status}
 
   const {token} = useSelector(selectAuth)
   const [permissions, setPermissions] = useState<Array<Permission>>([])
@@ -47,7 +53,7 @@ const EditRole = ({
     }
   }
 
-  const handleChange = (e, id) => {
+  const handleChange = (e: any, id: any) => {
     if (formik.values.status[id]) {
       e.target.checked = formik.values.status[id]?.state ? !formik.values.status[id].state : true
       formik.values.status[id] = {state: !formik.values.status[id].state, id}
@@ -149,7 +155,7 @@ const EditRole = ({
               {formik.touched.name && formik.errors.name && (
                 <div className='fv-plugins-message-container'>
                   <div className='fv-help-block'>
-                    <span role='alert'>{formik.errors.name[0]}</span>
+                    <span role='alert'>{formik.errors.name as React.ReactNode}</span>
                   </div>
                 </div>
               )}

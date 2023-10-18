@@ -44,7 +44,7 @@ export function NewPassword() {
     }
   }, [token])
 
-  const verifytoken = async (token) => {
+  const verifytoken = async (token: string) => {
     const RESPONSE = await post('auth/verifyPasswordRequestToken', {token: token})
     if (RESPONSE) {
       setIsVerifyToken(true)

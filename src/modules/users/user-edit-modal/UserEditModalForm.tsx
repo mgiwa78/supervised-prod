@@ -22,6 +22,12 @@ type Props = {
   state?: any
 }
 
+interface UserForEdit {
+  roles: Role[]
+}
+
+// Define rolesState as an object with string keys and boolean values
+const rolesState: {[key: string]: boolean} = {}
 const editUserSchema = Yup.object().shape({
   email: Yup.string()
     .email('Wrong email format')
@@ -57,7 +63,7 @@ const UserEditModalForm: FC<Props> = ({state}) => {
   const token = useSelector((state: RootState) => state.auth.token)
 
   const [departments, setDepartments] = useState<Array<Department>>([])
-  const [roles, setRoles] = useState<Array<Role>>([])
+  const [roles, setRoles] = useState<Array<any>>([])
   const [rolesState, setRolesState] = useState<any>(false)
   const [userForEdit, setuserForEdit] = useState<UserEdit>({
     ...us,
@@ -85,7 +91,7 @@ const UserEditModalForm: FC<Props> = ({state}) => {
 
   useEffect(() => {
     if (roles) {
-      const rolesState = {}
+      const rolesState: {[key: string]: boolean} = {}
       roles.forEach((e) => {
         if (userForEdit._id) {
           rolesState[e._id] = userForEdit.roles.some((r) => r.name === e.name)
@@ -342,7 +348,7 @@ const UserEditModalForm: FC<Props> = ({state}) => {
               {formik.touched.department && formik.errors.department && (
                 <div className='fv-plugins-message-container'>
                   <div className='fv-help-block'>
-                    <span role='alert'>{formik.errors.department[0]}</span>
+                    {/* <span role='alert'>{formik.errors.department}</span> */}
                   </div>
                 </div>
               )}

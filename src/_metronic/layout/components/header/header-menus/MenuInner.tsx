@@ -2,13 +2,20 @@ import {useIntl} from 'react-intl'
 import {MenuItem} from './MenuItem'
 import {MenuInnerWithSub} from './MenuInnerWithSub'
 import {MegaMenu} from './MegaMenu'
+import {useSelector} from 'react-redux'
+import {RootState} from '../../../../../redux/store'
 
 export function MenuInner() {
   const intl = useIntl()
+
+  const currentUser = useSelector((state: RootState) => state.auth.user)
   return (
     <>
       <MenuItem title={intl.formatMessage({id: 'MENU.DASHBOARD'})} to='/dashboard' />
-      <MenuItem title='Layout Builder' to='/builder' />
+
+      {currentUser?.roles.some((role) => role.name === 'Superadmin') && (
+        <MenuItem title='Layout Builder' to='/builder' />
+      )}
       {/* <MenuInnerWithSub
         title='Crafted'
         to='/crafted'

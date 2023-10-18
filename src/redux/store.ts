@@ -24,7 +24,7 @@ const reducers = combineReducers({auth: authReducer, document: documentReducer})
 // const persistedAuthReducer = persistReducer(persistConfig, authReducer)
 const persistedReducer = persistReducer(persistConfig, reducers)
 
-let middleware = (getDefaultMiddleware) =>
+let middleware = (getDefaultMiddleware: any) =>
   getDefaultMiddleware({
     serializableCheck: {
       ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
