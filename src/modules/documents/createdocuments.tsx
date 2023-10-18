@@ -69,7 +69,7 @@ const CreateDocuments = () => {
     const file = acceptedFiles[0]
 
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
-
+   console.log(file)
     if (file) {
       console.log(file)
       const AB = await file.arrayBuffer()
