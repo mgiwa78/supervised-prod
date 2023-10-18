@@ -10,8 +10,12 @@ import clsx from 'clsx'
 import post from '../../lib/post'
 import {selectAuth} from '../../redux/selectors/auth'
 import {ids} from 'webpack'
+import mammoth from 'mammoth'
 import {useDropzone} from 'react-dropzone'
 import {toAbsoluteUrl} from '../../_metronic/helpers'
+
+import {UploadResult, getStorage, ref, uploadBytes, getDownloadURL} from 'firebase/storage'
+import {storage} from '../../utils/firbase'
 // import {handleFileUpload2} from '../../utils/HandleFileUpload'
 // import {convertDocxToHtml, handleFileUpload} from '../../utils/HandleFileUpload'
 
@@ -54,21 +58,66 @@ const initialValues = {
 
 const CreateDocuments = () => {
   const [fileContent, setFileContent] = useState<string | null>(null)
+  const [fileUploadState, setFileUploadState] = useState<boolean | null | 'complete'>(null)
 
   const {token} = useSelector(selectAuth)
 
   const [loading, setLoading] = useState(false)
 
   const onDrop = async (acceptedFiles: Array<File>) => {
+    let urlPath
     const file = acceptedFiles[0]
-    const formData = new FormData()
 
-    formData.append('content', file)
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
 
-    const RESPONSE: any = await post('documents/convertToWord', formData, token, false)
+    if (file) {
+      console.log(file)
+      const AB = await file.arrayBuffer()
+      // const storageRef = ref(storage, `uploads/docs/${file.name + '_' + uniqueSuffix}`)
+      // const pathReference = ref(storage, 'images/stars.jpg')
+      const result = await mammoth.convertToHtml({arrayBuffer: AB})
 
-    setFileContent(RESPONSE.contentToHtml)
-    formik.values.content = RESPONSE.contentToHtml
+      setFileContent(result.value)
+      setFileUploadState('complete')
+
+      // await uploadBytes(storageRef, file)
+      //   .then((snapshot) => {
+      //     console.log(snapshot)
+      //     console.log('File uploaded successfully')
+      //   })
+      //   .catch((error) => {
+      //     console.error('Error uploading file:', error)
+      //   })
+
+      // await getDownloadURL(storageRef)
+      //   .then((url) => {
+      //     // `url` is the download URL for 'images/stars.jpg'
+
+      //     // This can be downloaded directly:
+      //     const xhr = new XMLHttpRequest()
+      //     xhr.responseType = 'blob'
+      //     xhr.onload = (event) => {
+      //       const blob = xhr.response
+      //     }
+      //     xhr.open('GET', url)
+      //     xhr.send()
+      //     urlPath = url
+      //     console.log(url)
+      //   })
+      //   .catch((error) => {
+      //     console.log(error)
+      //   })
+
+      // const RESPONSE: any = await post(
+      //   'documents/convertToWord',
+      //   {content_url: urlPath},
+      //   token,
+      //   false
+      // )
+
+      // setFileContent(RESPONSE.contentToHtml)
+      // formik.values.content = RESPONSE.contentToHtml
+    }
   }
 
   const {getRootProps, getInputProps} = useDropzone({
@@ -218,7 +267,13 @@ const CreateDocuments = () => {
               )}
               {formik.values.defualtTemplate === 'upload_word_file' ? (
                 <div className='col-6'>
-                  <div {...getRootProps()} className='dropzone'>
+                  <div
+                    {...getRootProps()}
+                    className={`dropzone ${fileUploadState === 'complete' ? 'bg-success' : ''}`}
+                    style={{
+                      border: ` ${fileUploadState === 'complete' ? '1px solid green' : ''}`,
+                    }}
+                  >
                     <input {...getInputProps()} />
                     <p>Drag & drop a file here, or click to select one</p>
                   </div>
